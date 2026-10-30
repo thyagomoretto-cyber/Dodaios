@@ -5,6 +5,7 @@ import App from "./App";
 import { ThemeProvider } from "./hooks/useTheme";
 import { ViewErrorBoundary } from "./components/ViewErrorBoundary";
 import { AuthGate } from "./components/AuthGate";
+import { CompaniesOverlayHost } from "./components/companies/CompaniesOverlay";
 import { installPreloadRecovery } from "./lib/preloadRecovery";
 import { POLL_MS, bundleFingerprint, installBundleWatch } from "./lib/bundleWatch";
 import { reloadHeld, setReloadHold } from "./lib/reloadHold";
@@ -158,7 +159,10 @@ function renderApp(): void {
                   <AppshotEditorWindow />
                 </React.Suspense>
               ) : (
-                <App />
+                <>
+                  <App />
+                  <CompaniesOverlayHost />
+                </>
               )}
             </AuthGate>
           </ViewErrorBoundary>
