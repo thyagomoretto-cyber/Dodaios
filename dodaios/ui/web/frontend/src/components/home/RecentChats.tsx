@@ -12,6 +12,15 @@ import { useHistoryPolling } from "@/hooks/useHistoryPolling";
 
 /** Sidebar history: pinned conversations first, then the chats under one heading per day. */
 const PINNED_KEY = "jarvis.sidebar.pinned-chats.v1";
+const VISIBLE_CHAT_ROWS = 4;
+const CHAT_ROW_HEIGHT_PX = 32;
+const CHAT_ROW_GAP_PX = 2;
+const CHAT_DAY_HEADER_PX = 28;
+const CHAT_SCROLL_HEIGHT_PX =
+  CHAT_DAY_HEADER_PX +
+  VISIBLE_CHAT_ROWS * CHAT_ROW_HEIGHT_PX +
+  (VISIBLE_CHAT_ROWS - 1) * CHAT_ROW_GAP_PX;
+
 function readPins(): string[] {
   try {
     const value: unknown = JSON.parse(localStorage.getItem(PINNED_KEY) ?? "[]");
@@ -41,48 +50,54 @@ export function RecentChats() {
 
   useHistoryPolling(loadSessions);
 
-  // Every chat is listed in one column: the
-  // sidebar scrolls instead of hiding the history behind "Show all"
-  // (maintainer, 2026-10-01). The archive dialog stays for searching it.
+  // Keep the full history available, but only four chat rows visible at once.
+  // The history gets its own scrollbar so it never pushes the rest of the
+  // sidebar (including Empresas/Profile) below the viewport.
   const days = groupChatRowsByDay(recentRows);
 
   return (
     <>
       <div data-testid="recent-chats" className="pb-1 pt-0.5">
-        {pinnedRows.length > 0 && <section data-testid="pinned-chats" className="mb-6">
-          <h2 className="px-3 pb-1.5 text-sm text-muted-foreground">{t("sidebar.pinned")}</h2>
-          <ul className="space-y-0.5">{pinnedRows.map((row) => <ChatRowItem key={rowKey(row)} row={row}
-            active={isActive(row)} pinned onPin={() => togglePin(row)} onOpen={() => openRow(row)}
-            onDelete={row.kind === "agent" ? () => remove(row) : undefined} />)}</ul>
-        </section>}
-        {recentRows.length === 0 ? (
-          <>
-            <h2 className="px-3 pb-1.5 text-sm text-muted-foreground">{t("sidebar.recent")}</h2>
-            <p className="py-1 px-3 text-sm text-foreground-faint">
-              {t("sidebar.no_chats")}
-            </p>
-          </>
-        ) : (
-          days.map((day) => (
-            <section key={day.dayMs} data-testid="chat-day" className="mb-6 last:mb-1">
-              <h2 className="px-3 pb-1.5 text-sm text-muted-foreground">
-                {day.relative ? t(`all_chats.group_${day.relative}`) : formatChatDay(day.dayMs, lang)}
-              </h2>
-              <ul className="space-y-0.5">
-                {day.rows.map((row) => (
-                  <ChatRowItem
-                    key={`${row.kind}-${row.id}`}
-                    row={row}
-                    active={isActive(row)}
-                    onPin={() => togglePin(row)}
-                    onOpen={() => openRow(row)}
-                    onDelete={row.kind === "agent" ? () => remove(row) : undefined}
-                  />
-                ))}
-              </ul>
-            </section>
-          ))
-        )}
+        <div
+          data-testid="recent-chats-scroll"
+          className="overflow-y-auto overscroll-contain pr-1"
+          style={{ maxHeight: `${CHAT_SCROLL_HEIGHT_PX}px` }}
+        >
+          {pinnedRows.length > 0 && <section data-testid="pinned-chats" className="mb-6">
+            <h2 className="px-3 pb-1.5 text-sm text-muted-foreground">{t("sidebar.pinned")}</h2>
+            <ul className="space-y-0.5">{pinnedRows.map((row) => <ChatRowItem key={rowKey(row)} row={row}
+              active={isActive(row)} pinned onPin={() => togglePin(row)} onOpen={() => openRow(row)}
+              onDelete={row.kind === "agent" ? () => remove(row) : undefined} />)}</ul>
+          </section>}
+          {recentRows.length === 0 ? (
+            <>
+              <h2 className="px-3 pb-1.5 text-sm text-muted-foreground">{t("sidebar.recent")}</h2>
+              <p className="py-1 px-3 text-sm text-foreground-faint">
+                {t("sidebar.no_chats")}
+              </p>
+            </>
+          ) : (
+            days.map((day) => (
+              <section key={day.dayMs} data-testid="chat-day" className="mb-6 last:mb-1">
+                <h2 className="px-3 pb-1.5 text-sm text-muted-foreground">
+                  {day.relative ? t(`all_chats.group_${day.relative}`) : formatChatDay(day.dayMs, lang)}
+                </h2>
+                <ul className="space-y-0.5">
+                  {day.rows.map((row) => (
+                    <ChatRowItem
+                      key={`${row.kind}-${row.id}`}
+                      row={row}
+                      active={isActive(row)}
+                      onPin={() => togglePin(row)}
+                      onOpen={() => openRow(row)}
+                      onDelete={row.kind === "agent" ? () => remove(row) : undefined}
+                    />
+                  ))}
+                </ul>
+              </section>
+            ))
+          )}
+        </div>
         {rows.length > 0 && (
           <button
             type="button"
