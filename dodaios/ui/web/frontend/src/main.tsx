@@ -11,7 +11,7 @@ import { POLL_MS, bundleFingerprint, installBundleWatch } from "./lib/bundleWatc
 import { reloadHeld, setReloadHold } from "./lib/reloadHold";
 import { useEventStore } from "./store/events";
 import { browserSafeReloadDeps, reloadWhenServable } from "./lib/safeReload";
-import { loadUiLocale, useI18nStore } from "./i18n";
+import { hydrateUiLanguage, loadUiLocale, useI18nStore } from "./i18n";
 import "./index.css";
 
 // When the frontend is rebuilt while the window is open, the old main bundle
@@ -172,6 +172,8 @@ function renderApp(): void {
   );
 }
 
-void loadUiLocale(useI18nStore.getState().ui)
+void hydrateUiLanguage()
+  .catch((error: unknown) => console.warn("Persisted interface language could not be hydrated", error))
+  .then(() => loadUiLocale(useI18nStore.getState().ui))
   .catch((error: unknown) => console.warn("Stored interface language could not be loaded", error))
   .finally(renderApp);
