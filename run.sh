@@ -26,6 +26,19 @@ else
     exit 1
 fi
 
+# This is the single final installation for this workspace. Keep Portuguese as
+# the persisted UI default before every launch, so a stale WebView/localStorage
+# value can never push the interface back to English after an update.
+"$PY" - <<'PY'
+try:
+    from dodaios.core import config_writer
+    from dodaios.core.config import resolve_config_path
+
+    config_writer.set_ui_language("pt", path=resolve_config_path())
+except Exception as exc:
+    print(f"warning: could not persist Portuguese UI language: {exc}")
+PY
+
 # Pre-boot drift check (optional, needs PowerShell 7+). Mirrors run.bat:
 # always continues on failure, never blocks boot, skipped without pwsh.
 if [ -f "scripts/check-working-tree.ps1" ] && command -v pwsh >/dev/null 2>&1; then
