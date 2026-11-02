@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "product": "JA",
+  "platform": "macos",
+  "channel": "stable",
+  "version": "0.1.0",
+  "checks": {
+    "qwen_runner": true,
+    "global_rules": true,
+    "self_healing": true,
+    "restart_frontend": true,
+    "restart_guard": true,
+    "loopback_origin": true,
+    "single_instance": true,
+    "speed_profile": true
+  },
+  "policy": {
+    "check_interval_hours": 24,
+    "background_check": true,
+    "backup_before_apply": true,
+    "healthcheck_after_apply": true,
+    "rollback_on_failure": true
+  },
+  "update_format": "bash",
+  "command_file": "ja-update/macos/update.sh",
+  "target_os": ["darwin"]
+}
