@@ -7,5 +7,6 @@
   "minimum_patch_manager_version": 2,
   "published_at": "2026-11-02T19:15:00Z",
   "manifest": "ja-update/windows/manifest.json",
-  "notes": "Canal Windows do JA. Atualizacoes deste canal devem conter comandos, patches e validacoes especificos para Windows."
+  "command_file": "ja-update/windows/update.ps1",
+  "notes": "Canal Windows do JA. Cada atualizacao Windows deve publicar comandos PowerShell, patches e validacoes especificos para Windows."
 }
