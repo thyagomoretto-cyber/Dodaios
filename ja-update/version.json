@@ -1,0 +1,10 @@
+{
+  "product": "JA",
+  "channel": "stable",
+  "version": "0.1.0",
+  "patch_manager_version": 2,
+  "minimum_patch_manager_version": 2,
+  "published_at": "2026-11-02T19:10:00Z",
+  "notes": "Base inicial do sistema central de atualizacoes do JA. Inclui Qwen local via API, regras globais, self-healing, controles de janela e correcoes do restart.",
+  "manifest": "ja-update/manifest.json"
+}
