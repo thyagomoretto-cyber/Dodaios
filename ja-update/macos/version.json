@@ -1,0 +1,11 @@
+{
+  "product": "JA",
+  "platform": "macos",
+  "channel": "stable",
+  "version": "0.1.0",
+  "patch_manager_version": 2,
+  "minimum_patch_manager_version": 2,
+  "published_at": "2026-11-02T19:15:00Z",
+  "manifest": "ja-update/macos/manifest.json",
+  "notes": "Canal macOS do JA. Atualizacoes deste canal devem conter comandos, patches e validacoes especificos para macOS."
+}
