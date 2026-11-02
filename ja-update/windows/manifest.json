@@ -23,5 +23,6 @@
     "rollback_on_failure": true
   },
   "update_format": "powershell",
+  "command_file": "ja-update/windows/update.ps1",
   "target_os": ["win32"]
 }
